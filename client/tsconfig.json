@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    // Build Information
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo", // Prioritized 'app' build info
+
+    // Target & Library
+    "target": "ES2022", // Chose the more modern ES2022
+    "lib": ["ES2023", "DOM", "DOM.Iterable"], // Merged libraries
+
+    // Module System
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx", // Added from the second config
+
+    // Class Fields
+    "useDefineForClassFields": true, // Included from the second config
+
+    // Linting
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+
+    // Skip library type checking
+    "skipLibCheck": true
+  },
+  "include": ["vite.config.ts", "src"]
+}

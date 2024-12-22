@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face{
+    font-family: Raleway;
+    src: url(/fonts/Raleway/static/Raleway-Thin.ttf);
+    font-weight: 200;
+}
+@font-face{
+    font-family: Raleway;
+    src: url(/fonts/Raleway/static/Raleway-Light.ttf);
+    font-weight: 300;
+}
+@font-face{
+    font-family: Raleway;
+    src: url(/fonts/Raleway/static/Raleway-Regular.ttf);
+    font-weight: 400;
+}
+@font-face{
+    font-family: Raleway;
+    src: url(/fonts/Raleway/static/Raleway-Medium.ttf);
+    font-weight: 500;
+}
+@font-face{
+    font-family: Raleway;
+    src: url(/fonts/Raleway/static/Raleway-SemiBold.ttf);
+    font-weight: 600;
+}
+@font-face{
+    font-family: Raleway;
+    src: url(/fonts/Raleway/static/Raleway-Bold.ttf);
+    font-weight: 700;
+}
+@font-face{
+    font-family: Raleway;
+    src: url(/fonts/Raleway/static/Raleway-ExtraBold.ttf);
+    font-weight: 800;
+}
+@font-face{
+    font-family: Raleway;
+    src: url(/fonts/Raleway/static/Raleway-Black.ttf);
+    font-weight: 900;
+}
+
+@font-face{
+    font-family: Montserrat;
+    src: url(/fonts/Montserrat/static/Montserrat-Thin.ttf);
+    font-weight: 200;
+}
+@font-face{
+    font-family: Montserrat;
+    src: url(/fonts/Montserrat/static/Montserrat-Light.ttf);
+    font-weight: 300;
+}
+@font-face{
+    font-family: Montserrat;
+    src: url(/fonts/Montserrat/static/Montserrat-Regular.ttf);
+    font-weight: 400;
+}
+@font-face{
+    font-family: Montserrat;
+    src: url(/fonts/Montserrat/static/Montserrat-Medium.ttf);
+    font-weight: 500;
+}
+@font-face{
+    font-family: Montserrat;
+    src: url(/fonts/Montserrat/static/Montserrat-SemiBold.ttf);
+    font-weight: 600;
+}
+@font-face{
+    font-family: Montserrat;
+    src: url(/fonts/Montserrat/static/Montserrat-Bold.ttf);
+    font-weight: 700;
+}
+@font-face{
+    font-family: Montserrat;
+    src: url(/fonts/Montserrat/static/Montserrat-ExtraBold.ttf);
+    font-weight: 800;
+}
+@font-face{
+    font-family: Montserrat;
+    src: url(/fonts/Montserrat/static/Montserrat-Black.ttf);
+    font-weight: 900;
+}
+
+
+.hide-scrollbar {
+    -ms-overflow-style: none; 
+    scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none; 
+}

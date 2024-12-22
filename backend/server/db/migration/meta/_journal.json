@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1733252375583,
+      "tag": "0000_melted_epoch",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1733263601301,
+      "tag": "0001_optimal_spyke",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1733419641725,
+      "tag": "0002_cute_ironclad",
+      "breakpoints": true
+    }
+  ]
+}
