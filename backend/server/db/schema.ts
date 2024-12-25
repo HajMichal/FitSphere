@@ -26,7 +26,7 @@ export const users = pgTable("users", {
   name: varchar("name", { length: 255 }).notNull(),
   surname: varchar("surname", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
-  phone: varchar("phone", { length: 9 }).notNull().unique(),
+  phone: varchar("phone", { length: 9 }).unique(),
   password: varchar("password", { length: 255 }).notNull(),
   role: roleEnum("role").notNull().default("gymmer"),
   country: varchar("country", { length: 255 }),
