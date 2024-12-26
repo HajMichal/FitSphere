@@ -1,9 +1,11 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
-import bcrypt from "bcrypt";
-import { users } from "../../db/schema";
 import { eq } from "drizzle-orm";
-const saltRounds = 10;
+import { TRPCError } from "@trpc/server";
+
+import { users } from "../../db/schema";
+import { createTRPCRouter, publicProcedure } from "../trpc";
+import { signTokenAndCreateSession } from "../utils/jwt";
+import { comparePasswords, hashPassword } from "../utils/passwordMenager";
 
 export const loginRouter = createTRPCRouter({
   createAccount: publicProcedure
@@ -20,7 +22,7 @@ export const loginRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const hashedPwd = await bcrypt.hash(input.password, saltRounds);
+      const hashedPwd = await hashPassword(input.password);
       const user = await ctx.drizzle
         .insert(users)
         .values({
@@ -35,13 +37,25 @@ export const loginRouter = createTRPCRouter({
     .input(
       z.object({
         login: z.string(),
-        hashedPwd: z.string(),
+        password: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      ctx.drizzle
-        .select({ password: users.password })
-        .from(users)
-        .where(eq(users.email, input.login));
+      const user = await ctx.drizzle.query.users.findFirst({
+        columns: {
+          id: true,
+          name: true,
+          password: true,
+        },
+        where: eq(users.email, input.login),
+      });
+
+      if (!user)
+        throw new TRPCError({ message: "INCORRECT LOGIN", code: "NOT_FOUND" });
+
+      await comparePasswords(user.password, input.password);
+
+      const currentSession = await signTokenAndCreateSession({ user, ctx });
+      return { msg: "logged in", body: currentSession };
     }),
 });

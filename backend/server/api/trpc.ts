@@ -1,7 +1,9 @@
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import type { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
 import { db } from "../db/index";
 import SuperJSON from "superjson";
+import { Sessions } from "../db/schema";
+import { getSession } from "./utils/getSession";
 
 /**
  *
@@ -9,18 +11,20 @@ import SuperJSON from "superjson";
  *
  */
 interface CreateContextOptions extends Partial<CreateHTTPContextOptions> {
-  session: "SESSION TYPE" | null;
+  session: Sessions | null;
 }
 
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     drizzle: db,
     session: opts.session,
+    req: opts.req,
+    res: opts.res,
   };
 };
 
 export const createTRPCContext = (opts: CreateHTTPContextOptions) => {
-  const session = "SESSION TYPE";
+  const session = getSession({ opts: opts });
   const innterCtx = createInnerTRPCContext({ session });
   return createInnerTRPCContext({
     ...innterCtx,
@@ -43,3 +47,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 
 export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
+export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.session) throw new TRPCError({ code: "UNAUTHORIZED" });
+  return next({ ctx: { session: ctx.session } });
+});

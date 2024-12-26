@@ -131,7 +131,7 @@ export const sessions = pgTable("sessions", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 255 }).notNull(),
   token: varchar("token", { length: 255 }).notNull(),
-  expirationIn: date("expiration_in").notNull(),
+  expirationIn: integer("expiration_in").notNull(),
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id),
