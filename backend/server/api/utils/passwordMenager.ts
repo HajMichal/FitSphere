@@ -3,11 +3,13 @@ import bcrypt from "bcrypt";
 
 export async function comparePasswords(hash: string, password: string) {
   const checkPwd = await bcrypt.compare(hash, password);
-  if (!checkPwd)
+  if (!checkPwd) {
+    setTimeout(() => {}, 300);
     throw new TRPCError({
-      message: "INCORRECT PASSWORD",
+      message: "INCORRECT CREDENTIALS",
       code: "NOT_FOUND",
     });
+  }
 }
 
 const saltRounds = 10;

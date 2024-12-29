@@ -7,6 +7,7 @@ import {
   text,
   uuid,
   varchar,
+  boolean,
   jsonb,
 } from "drizzle-orm/pg-core";
 import { InferSelectModel, relations } from "drizzle-orm";
@@ -26,6 +27,7 @@ export const users = pgTable("users", {
   name: varchar("name", { length: 255 }).notNull(),
   surname: varchar("surname", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
+  isEmailVerified: boolean().notNull().default(false),
   phone: varchar("phone", { length: 9 }).unique(),
   password: varchar("password", { length: 255 }).notNull(),
   role: roleEnum("role").notNull().default("gymmer"),
@@ -131,7 +133,7 @@ export const sessions = pgTable("sessions", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 255 }).notNull(),
   token: varchar("token", { length: 255 }).notNull(),
-  expirationIn: integer("expiration_in").notNull(),
+  expiresAt: date("expiresAt").notNull(),
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id),
@@ -142,3 +144,10 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export type TwoFactorAuth = InferSelectModel<typeof twoFactorAuth>;
+export const twoFactorAuth = pgTable("twoFactorAuth", {
+  email: varchar("email", { length: 255 }).notNull().primaryKey(),
+  code: varchar("code", { length: 6 }).notNull(),
+  expiresAt: date("expiresAt").notNull(),
+});

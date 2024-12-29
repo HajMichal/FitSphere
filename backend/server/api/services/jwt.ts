@@ -12,19 +12,19 @@ export async function signTokenAndCreateSession({
   user,
   ctx,
 }: SignTokenAndCreateSession): Promise<Sessions> {
-  const { token, exp } = generateToken(user.id, user.name);
+  const { token, exp } = generateJWTToken(user.id, user.name);
   const currentSession = await ctx.drizzle
     .insert(sessions)
     .values({
       userId: user.id,
       name: user.name,
       token: token,
-      expirationIn: exp,
+      expiresAt: exp,
     })
     .onConflictDoUpdate({
       target: sessions.id,
       set: {
-        expirationIn: exp,
+        expiresAt: exp,
         token: token,
       },
     })
@@ -33,8 +33,10 @@ export async function signTokenAndCreateSession({
   return currentSession[0];
 }
 
-function generateToken(id: string, name: string) {
-  const exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24;
+function generateJWTToken(id: string, name: string) {
+  const exp = new Date(
+    Math.floor(Date.now() / 1000) + 60 * 60 * 24
+  ).toDateString();
   const token = jwt.sign({ id, name, exp }, process.env.SECRET_TOKEN_KEY!, {
     algorithm: "RS256",
     expiresIn: exp,
