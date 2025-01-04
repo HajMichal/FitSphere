@@ -6,6 +6,7 @@ import { pendingUsers, twoFactorAuth, users } from "../../db/schema";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { signTokenAndCreateSession } from "../services/jwt";
 import { comparePasswords, hashPassword } from "../utils/passwordMenager";
+import { generateAndSendCode } from "../services/generateAndSendCode";
 
 const throwTrpcError = (message = "INCORRECT CREDENTIALS") => {
   throw new TRPCError({
@@ -53,6 +54,9 @@ export const loginRouter = createTRPCRouter({
           },
         })
         .returning({ id: users.id, name: users.name });
+
+      const { success } = await generateAndSendCode(input.email, ctx);
+      if (!success) throwTrpcError("TOKEN NOT SENT");
       return { msg: "created", body: { pendingUserId: pendingUser[0].id } };
     }),
 
