@@ -2,9 +2,11 @@ import cors from "cors";
 import { createHTTPServer } from "@trpc/server/adapters/standalone";
 import { exampleRouter } from "./api/routers/example";
 import { createTRPCContext, createTRPCRouter } from "./api/trpc";
+import { loginRouter } from "./api/routers/auth";
 
 const appRouter = createTRPCRouter({
   example: exampleRouter,
+  auth: loginRouter,
 });
 
 // export type definition of API
