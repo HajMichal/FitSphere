@@ -1,6 +1,5 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { trpc } from "../api/trpc";
-import { PageContainer } from "../components/styled/Containers";
 import { forwardRef } from "react";
 import { Input as CustomInput, SubmitButton } from "../components/UIElements";
 
@@ -39,7 +38,7 @@ export const Input: React.FC<FormInputProps> = forwardRef(
 );
 
 function Register() {
-  const { mutate, error } = trpc.auth.createAccount.useMutation();
+  const { mutate } = trpc.auth.createAccount.useMutation();
   const {
     register,
     handleSubmit,
@@ -50,9 +49,9 @@ function Register() {
     // Here you would typically send the data to your backend
     console.log(data);
     mutate(data);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
   };
+
+  // Split registration to 2 or 3 steps
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-3 pb-40 bg-background">
       <div className="flex">

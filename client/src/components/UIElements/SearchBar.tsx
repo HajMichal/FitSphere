@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { CenterContent } from "../styled/Containers";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 

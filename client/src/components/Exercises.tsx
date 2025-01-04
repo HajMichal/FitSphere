@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { trpc } from "../api/trpc";
 import { Header } from "./styled/Text";
 import { ExerciseTile } from "./ExerciseTile";

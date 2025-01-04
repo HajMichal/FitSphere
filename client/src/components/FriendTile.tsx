@@ -1,4 +1,3 @@
-import React from "react";
 import { LongTile, LongTileContent, LongTileDetail } from "./styled/Tiles";
 import { Eye, UserCircle } from "@phosphor-icons/react";
 import { ContentHeader, ShortDescription } from "./styled/Text";

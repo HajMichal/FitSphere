@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { ShortDescription, SmallText } from "../styled/Text";
 import { formatDate, formatWeekDay } from "../../utils/date";
 
