@@ -36,7 +36,7 @@ export async function signTokenAndCreateSession({
 function generateJWTToken(id: string, name: string) {
   const exp = new Date(
     Math.floor(Date.now() / 1000) + 60 * 60 * 24
-  ).toDateString();
+  ).toISOString();
   const token = jwt.sign({ id, name, exp }, process.env.SECRET_TOKEN_KEY!, {
     algorithm: "RS256",
     expiresIn: exp,

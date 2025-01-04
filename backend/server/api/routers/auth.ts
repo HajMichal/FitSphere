@@ -2,10 +2,17 @@ import { z } from "zod";
 import { and, eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
-import { twoFactorAuth, users } from "../../db/schema";
+import { pendingUsers, twoFactorAuth, users } from "../../db/schema";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { signTokenAndCreateSession } from "../services/jwt";
 import { comparePasswords, hashPassword } from "../utils/passwordMenager";
+
+const throwTrpcError = (message = "INCORRECT CREDENTIALS") => {
+  throw new TRPCError({
+    message,
+    code: "BAD_REQUEST",
+  });
+};
 
 export const loginRouter = createTRPCRouter({
   createAccount: publicProcedure
@@ -23,26 +30,30 @@ export const loginRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (input.password !== input.repeatPassword)
-        throw new TRPCError({
-          message: "INCORRECT CREDENTIALS",
-          code: "NOT_FOUND",
-        });
+      if (input.password !== input.repeatPassword) throwTrpcError();
+
+      const isUserWithEmail = await ctx.drizzle.query.users.findFirst({
+        where: eq(users.email, input.email),
+      });
+
+      if (isUserWithEmail?.email) throwTrpcError();
 
       const hashedPwd = await hashPassword(input.password);
-      // Check if user already exists with this email
-      //    if yes ==> check if email is already verified
-      //        if yes ==> throw error this email is already in use
-      //        if no  ==> create new token and move user to next step which is email verification
-      //    if no  ==> let create new user
-      const user = await ctx.drizzle
-        .insert(users)
+      const pendingUser = await ctx.drizzle
+        .insert(pendingUsers)
         .values({
           ...input,
           password: hashedPwd,
         })
+        .onConflictDoUpdate({
+          target: pendingUsers.email,
+          set: {
+            ...input,
+            password: hashedPwd,
+          },
+        })
         .returning({ id: users.id, name: users.name });
-      return { msg: "created", body: { id: user[0].id, name: user[0].name } };
+      return { msg: "created", body: { pendingUserId: pendingUser[0].id } };
     }),
 
   signIn: publicProcedure
@@ -58,18 +69,15 @@ export const loginRouter = createTRPCRouter({
           id: true,
           name: true,
           password: true,
-          isEmailVerified: true,
         },
         where: eq(users.email, input.login),
       });
 
-      if (!user?.isEmailVerified) {
-        // This delay makes BAD requests a little bit longer, so bruteforce/dictionary/stuffing attacks will be slowed.
-        setTimeout(() => {}, 300);
-        throw new TRPCError({
-          message: "INCORRECT CREDENTIALS",
-          code: "NOT_FOUND",
-        });
+      if (!user) {
+        // This delay makes BAD requests a little bit longer,
+        // bruteforce/dictionary/stuffing attacks will be slowed.
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        return throwTrpcError();
       }
 
       await comparePasswords(user.password, input.password);
@@ -82,30 +90,36 @@ export const loginRouter = createTRPCRouter({
       z.object({
         code: z.string().length(6),
         email: z.string().email(),
+        pendingUserId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const isToken = await ctx.drizzle.query.twoFactorAuth.findFirst({
+      const token = await ctx.drizzle.query.twoFactorAuth.findFirst({
         where: and(
           eq(twoFactorAuth.code, input.code),
           eq(twoFactorAuth.email, input.email)
         ),
       });
 
-      // Check token expiration time
+      if (!token) return throwTrpcError();
 
-      if (isToken) {
-        await ctx.drizzle
-          .delete(twoFactorAuth)
-          .where(eq(twoFactorAuth.email, input.email));
+      const currentTime = new Date();
+      const expirationTime = new Date(token.expiresAt);
 
-        // mark email as verified
-        await ctx.drizzle
-          .update(users)
-          .set({ isEmailVerified: true })
-          .where(eq(users.email, input.email));
-      }
+      if (currentTime > expirationTime) return throwTrpcError("TOKEN EXPIRED");
 
+      const userData = await ctx.drizzle.query.pendingUsers.findFirst({
+        where: eq(users.id, input.pendingUserId),
+      });
+      if (!userData) return throwTrpcError("SOMETHING WENT WRONG");
+
+      await ctx.drizzle.insert(users).values(userData);
+      await ctx.drizzle
+        .delete(pendingUsers)
+        .where(eq(pendingUsers.id, userData.id));
+      await ctx.drizzle
+        .delete(twoFactorAuth)
+        .where(eq(twoFactorAuth.email, input.email));
       return { msg: "Success Verification" };
     }),
 });
