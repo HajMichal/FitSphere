@@ -3,3 +3,4 @@
 **.vscode
 backend/server/db/migration
 backend/server/db/migration/meta
+**dist
