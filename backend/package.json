@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@trpc/server": "next",
+    "@types/bun": "^1.1.14",
     "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.7",
     "cors": "^2.8.5",

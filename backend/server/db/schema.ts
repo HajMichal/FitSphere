@@ -9,7 +9,7 @@ import {
   varchar,
   jsonb,
 } from "drizzle-orm/pg-core";
-import { InferSelectModel, relations } from "drizzle-orm";
+import { InferSelectModel, relations, sql } from "drizzle-orm";
 
 export const rolesEnum = pgEnum("roles", ["gymmer", "trainer", "admin"]);
 
@@ -21,23 +21,31 @@ export type UserWithRelations = User & {
   // friends: User[];
   // session: Sessions | null;
 };
-export const users = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 255 }).notNull(),
-  surname: varchar("surname", { length: 255 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
-  phone: varchar("phone", { length: 9 }).unique(),
-  password: varchar("password", { length: 255 }).notNull(),
-  role: roleEnum("role").notNull().default("gymmer"),
-  country: varchar("country", { length: 255 }),
-  city: varchar("city", { length: 255 }),
-  gymName: varchar("gym_name", { length: 255 }),
-  age: integer("age").notNull(),
-  height: decimal("height", { precision: 5, scale: 2 }),
-  weight: decimal("weight", { precision: 5, scale: 2 }),
-  createdAt: date("created_at").notNull().defaultNow(),
-  updatedAt: date("updated_at").notNull().defaultNow(),
-});
+export const users = pgTable(
+  "users",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 255 }).notNull(),
+    surname: varchar("surname", { length: 255 }).notNull(),
+    email: varchar("email", { length: 255 }).notNull().unique(),
+    phone: varchar("phone", { length: 9 }),
+    password: varchar("password", { length: 255 }).notNull(),
+    role: roleEnum("role").notNull().default("gymmer"),
+    country: varchar("country", { length: 255 }),
+    city: varchar("city", { length: 255 }),
+    gymName: varchar("gym_name", { length: 255 }),
+    age: integer("age").notNull(),
+    height: decimal("height", { precision: 5, scale: 2 }),
+    weight: decimal("weight", { precision: 5, scale: 2 }),
+    createdAt: date("created_at").notNull().defaultNow(),
+    updatedAt: date("updated_at").notNull().defaultNow(),
+  },
+  () => {
+    return {
+      phoneUnique: sql`UNIQUE(phone) WHERE phone IS NOT NULL`,
+    };
+  }
+);
 
 export const usersRelations = relations(users, ({ many, one }) => ({
   trainings: many(trainings),
@@ -151,15 +159,23 @@ export const twoFactorAuth = pgTable("twoFactorAuth", {
 });
 
 export type PendingUsers = InferSelectModel<typeof pendingUsers>;
-export const pendingUsers = pgTable("pendingUsers", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 255 }).notNull(),
-  surname: varchar("surname", { length: 255 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
-  phone: varchar("phone", { length: 9 }).unique(),
-  password: varchar("password", { length: 255 }).notNull(),
-  country: varchar("country", { length: 255 }),
-  city: varchar("city", { length: 255 }),
-  gymName: varchar("gym_name", { length: 255 }),
-  age: integer("age").notNull(),
-});
+export const pendingUsers = pgTable(
+  "pendingUsers",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 255 }).notNull(),
+    surname: varchar("surname", { length: 255 }).notNull(),
+    email: varchar("email", { length: 255 }).notNull().unique(),
+    phone: varchar("phone", { length: 9 }),
+    password: varchar("password", { length: 255 }).notNull(),
+    country: varchar("country", { length: 255 }),
+    city: varchar("city", { length: 255 }),
+    gymName: varchar("gym_name", { length: 255 }),
+    age: integer("age").notNull(),
+  },
+  () => {
+    return {
+      phoneUnique: sql`UNIQUE(phone) WHERE phone IS NOT NULL`,
+    };
+  }
+);
