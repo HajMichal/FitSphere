@@ -1,3 +1,5 @@
 **.env
 **node_modules
 **.vscode
+backend/server/db/migration
+backend/server/db/migration/meta
