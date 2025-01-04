@@ -1,11 +1,10 @@
-import React, { forwardRef, InputHTMLAttributes } from "react";
-import { ContentHeader, Header, ShortDescription } from "../styled/Text";
-import { type Icon, Tag } from "@phosphor-icons/react";
+import { forwardRef, InputHTMLAttributes } from "react";
+import { ContentHeader, ShortDescription } from "../styled/Text";
+import { type Icon } from "@phosphor-icons/react";
 import { CenterContent } from "../styled/Containers";
 
-export interface TrainingInputProps
-  extends InputHTMLAttributes<HTMLInputElement> {
-  Icon: Icon;
+interface TrainingInputProps extends InputHTMLAttributes<HTMLInputElement> {
+  Icon?: Icon;
   placeholder: string;
   label: string;
   error?: string;
@@ -13,6 +12,7 @@ export interface TrainingInputProps
   inputClassName?: string;
   labelClassName?: string;
   optional?: boolean;
+  type?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, TrainingInputProps>(
@@ -26,6 +26,7 @@ export const Input = forwardRef<HTMLInputElement, TrainingInputProps>(
       error,
       placeholder,
       optional = false,
+      type = "text",
       ...props
     },
     ref
@@ -38,19 +39,22 @@ export const Input = forwardRef<HTMLInputElement, TrainingInputProps>(
             <ShortDescription>{optional && "(optional)"}</ShortDescription>
           </div>
           <div className="relative group">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <Icon
-                className="text-grey group-focus-within:text-brand"
-                size={22}
-              />
-            </div>
+            {Icon && (
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <Icon
+                  className="text-grey group-focus-within:text-brand"
+                  size={22}
+                />
+              </div>
+            )}
             <input
               ref={ref}
-              type="text"
+              type={type}
               className={`
-                block w-full rounded-md border border-grey py-2 pl-10 text-sm outline-none transition-colors 
-                placeholder:text-grey
+                block w-full rounded-md border border-grey py-2 text-sm outline-none transition-colors 
+                placeholder:text-grey placeholder:font-raleway
                 focus:border-brand focus:ring-1 focus:ring-brand 
+                ${Icon ? "pl-10" : "pl-3"}
                 ${error && "border-error focus:border-error focus:ring-error"}
                 ${inputClassName}
                 `}

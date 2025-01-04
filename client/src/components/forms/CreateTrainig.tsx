@@ -3,7 +3,7 @@ import { BookOpenText, CalendarDots, Tag } from "@phosphor-icons/react";
 import { ContentHeader, ShortDescription, SmallText } from "../styled/Text";
 import { CalendarContainer } from "../calendar/Calendar";
 import { CenterContent } from "../styled/Containers";
-import { SubmitButton, Input } from "../UiElements";
+import { SubmitButton, Input } from "../UIElements";
 
 const week = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 export function CreateTrainigForm() {
@@ -51,7 +51,7 @@ export function CreateTrainigForm() {
         placeholder="Number of months"
         Icon={CalendarDots}
       />
-      <SubmitButton />
+      <SubmitButton text="SUBMIT" />
     </div>
   );
 }
@@ -76,7 +76,9 @@ const WeekDay = ({ day, dayIndex, trainingDays, setTrainingDay }: WeekDay) => {
     >
       <ShortDescription>{day}</ShortDescription>
       <SmallText
-        className={`p-2 mt-2 rounded-lg ${isChoosed ? "bg-brand text-white" : ""}`}
+        className={`p-2 mt-2 rounded-lg ${
+          isChoosed ? "bg-brand text-white" : ""
+        }`}
       >
         {dayIndex + 1}
       </SmallText>

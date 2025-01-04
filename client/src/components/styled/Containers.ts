@@ -5,6 +5,7 @@ export const PageContainer = styled.div`
   height: 90vh;
   overflow-y: auto;
   background-color: ${(props) => props.theme.background};
+  font-family: "Montserrat";
 `;
 
 export const CenterContent = styled.div`
