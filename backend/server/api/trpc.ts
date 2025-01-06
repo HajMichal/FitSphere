@@ -1,16 +1,16 @@
 import { initTRPC, TRPCError } from "@trpc/server";
-import type { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
 import { db } from "../db/index";
 import SuperJSON from "superjson";
 import { Sessions } from "../db/schema";
 import { getSession } from "./utils/getSession";
+import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 
 /**
  *
  * 1. CONTEXT
  *
  */
-interface CreateContextOptions extends Partial<CreateHTTPContextOptions> {
+interface CreateContextOptions extends Partial<FetchCreateContextFnOptions> {
   session: Sessions | null;
 }
 
@@ -19,17 +19,15 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
     drizzle: db,
     session: opts.session,
     req: opts.req,
-    res: opts.res,
   };
 };
 
-export const createTRPCContext = (opts: CreateHTTPContextOptions) => {
+export const createTRPCContext = (opts: FetchCreateContextFnOptions) => {
   const session = getSession({ opts: opts });
   const innterCtx = createInnerTRPCContext({ session });
   return createInnerTRPCContext({
     ...innterCtx,
     req: opts.req,
-    res: opts.res,
   });
 };
 export type Context = Awaited<ReturnType<typeof createInnerTRPCContext>>;

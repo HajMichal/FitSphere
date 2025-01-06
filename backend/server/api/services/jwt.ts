@@ -29,7 +29,8 @@ export async function signTokenAndCreateSession({
       },
     })
     .returning();
-  if (ctx.req) ctx.req.headers["authorization"] = stringify(currentSession[0]);
+  if (ctx.req)
+    ctx.req.headers.set("authorization", stringify(currentSession[0]));
   return currentSession[0];
 }
 

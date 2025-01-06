@@ -1,4 +1,0 @@
-name="client"
-pages_build_output_dir="./client/dist"
-[build]
-command = "cd backend && bun install && cd ../client && bun install && bun run build"
