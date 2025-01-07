@@ -1,7 +1,9 @@
 **.env
 **node_modules
 **.vscode
-backend/server/db/migration
-backend/server/db/migration/meta
 **dist
 **wrangler.toml
+
+backend/drizzle
+backend/server/db/DB
+backend/.wrangler

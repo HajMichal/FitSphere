@@ -9,8 +9,6 @@
     "dev": "bun run dev:client & bun run dev:backend",
     "dev:client": "bun run --cwd client dev",
     "dev:backend": "bun run --cwd backend dev",
-    "build": "bun run build:client && bun run build:backend",
-    "build:client": "bun run --cwd client build",
-    "build:backend": "bun run --cwd backend build"
+    "build:client": "bun run --cwd client build"
   }
 }

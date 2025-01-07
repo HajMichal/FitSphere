@@ -3,7 +3,12 @@
   "module": "./server/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun run --hot server/index.ts"
+    "dev": "bun run --hot server/index.ts",
+    "db:gen": "drizzle-kit generate",
+    "db:up": "drizzle-kit up",
+    "deploy": "wrangler deploy --minify server/index.ts",
+    "remote:db:push": "bunx wrangler d1 execute prod-fitsphere --remote",
+    "local:db:push": "bunx wrangler d1 execute prod-fitsphere --local"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
