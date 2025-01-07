@@ -2,6 +2,7 @@ import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { exampleRouter } from "./api/routers/example";
 import { createTRPCContext, createTRPCRouter } from "./api/trpc";
 import { loginRouter } from "./api/routers/auth";
+import { D1Database } from "@cloudflare/workers-types";
 
 const appRouter = createTRPCRouter({
   example: exampleRouter,
@@ -48,8 +49,12 @@ function getCorsHeaders(request: Request): Record<string, string> {
   };
 }
 
+export interface Env {
+  DB: D1Database;
+}
+
 export default {
-  async fetch(request: Request): Promise<Response> {
+  async fetch(request: Request, env: Env): Promise<Response> {
     const corsResponse = handleCors(request);
     if (corsResponse) return corsResponse;
 
@@ -57,7 +62,7 @@ export default {
       endpoint: "/trpc",
       req: request,
       router: appRouter,
-      createContext: createTRPCContext,
+      createContext: (opts) => createTRPCContext({ ...opts, env }),
     });
 
     const headers = new Headers(response.headers);

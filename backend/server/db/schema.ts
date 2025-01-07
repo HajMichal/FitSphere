@@ -1,51 +1,36 @@
-import {
-  pgTable,
-  pgEnum,
-  integer,
-  decimal,
-  date,
-  text,
-  uuid,
-  varchar,
-  jsonb,
-} from "drizzle-orm/pg-core";
+import { sqliteTable, integer, real, text } from "drizzle-orm/sqlite-core";
 import { InferSelectModel, relations, sql } from "drizzle-orm";
 
-export const rolesEnum = pgEnum("roles", ["gymmer", "trainer", "admin"]);
-
-export const roleEnum = pgEnum("role", ["gymmer", "trainer", "admin"]);
+type Role = "gymmer" | "trainer" | "admin";
 
 export type User = InferSelectModel<typeof users>;
 export type UserWithRelations = User & {
   trainings: TrainingsWithRelations[];
-  // friends: User[];
-  // session: Sessions | null;
+  friends: User[];
+  session: Sessions | null;
 };
-export const users = pgTable(
-  "users",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    name: varchar("name", { length: 255 }).notNull(),
-    surname: varchar("surname", { length: 255 }).notNull(),
-    email: varchar("email", { length: 255 }).notNull().unique(),
-    phone: varchar("phone", { length: 9 }),
-    password: varchar("password", { length: 255 }).notNull(),
-    role: roleEnum("role").notNull().default("gymmer"),
-    country: varchar("country", { length: 255 }),
-    city: varchar("city", { length: 255 }),
-    gymName: varchar("gym_name", { length: 255 }),
-    age: integer("age").notNull(),
-    height: decimal("height", { precision: 5, scale: 2 }),
-    weight: decimal("weight", { precision: 5, scale: 2 }),
-    createdAt: date("created_at").notNull().defaultNow(),
-    updatedAt: date("updated_at").notNull().defaultNow(),
-  },
-  () => {
-    return {
-      phoneUnique: sql`UNIQUE(phone) WHERE phone IS NOT NULL`,
-    };
-  }
-);
+
+export const users = sqliteTable("users", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  surname: text("surname").notNull(),
+  email: text("email").notNull().unique(),
+  phone: text("phone").unique(),
+  password: text("password").notNull(),
+  role: text("role").$type<Role>().notNull().default("gymmer"),
+  country: text("country"),
+  city: text("city"),
+  gymName: text("gym_name"),
+  age: integer("age").notNull(),
+  height: real("height"),
+  weight: real("weight"),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(unixepoch())`),
+  updatedAt: text("updated_at")
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
 
 export const usersRelations = relations(users, ({ many, one }) => ({
   trainings: many(trainings),
@@ -59,11 +44,11 @@ export const usersRelations = relations(users, ({ many, one }) => ({
 }));
 
 export type Friendships = InferSelectModel<typeof friendships>;
-export const friendships = pgTable("friendships", {
-  userId: uuid("user_id")
+export const friendships = sqliteTable("friendships", {
+  userId: text("user_id")
     .notNull()
     .references(() => users.id),
-  friendId: uuid("friend_id")
+  friendId: text("friend_id")
     .notNull()
     .references(() => users.id),
 });
@@ -72,18 +57,23 @@ export type Trainings = InferSelectModel<typeof trainings>;
 export type TrainingsWithRelations = Trainings & {
   trainingDay: TrainingDay[];
 };
-export const trainings = pgTable("trainings", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 255 }).notNull(),
+export const trainings = sqliteTable("trainings", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
   description: text("description"),
   weeklyFrequency: integer("weekly_frequency").notNull(),
   period: integer("period").notNull(),
-  createdAt: date("created_at").notNull().defaultNow(),
-  updatedAt: date("updated_at").notNull().defaultNow(),
-  userId: uuid("user_id")
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(unixepoch())`),
+  updatedAt: text("updated_at")
+    .notNull()
+    .default(sql`(unixepoch())`),
+  userId: text("user_id")
     .notNull()
     .references(() => users.id),
 });
+
 export const trainingsRelations = relations(trainings, ({ many, one }) => ({
   trainingDay: many(trainingDay),
   user: one(users, {
@@ -93,17 +83,22 @@ export const trainingsRelations = relations(trainings, ({ many, one }) => ({
 }));
 
 export type TrainingDay = InferSelectModel<typeof trainingDay>;
-export const trainingDay = pgTable("trainingDay", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 255 }).notNull(),
+export const trainingDay = sqliteTable("trainingDay", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
   description: text("description"),
-  createdAt: date("created_at").notNull().defaultNow(),
-  updatedAt: date("updated_at").notNull().defaultNow(),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(unixepoch())`),
+  updatedAt: text("updated_at")
+    .notNull()
+    .default(sql`(unixepoch())`),
   trainingNumber: integer("training_number").notNull().default(0),
-  trainingId: uuid("training_id")
+  trainingId: text("training_id")
     .notNull()
     .references(() => trainings.id),
 });
+
 export const trainingDayRelations = relations(trainingDay, ({ many, one }) => ({
   exercises: many(exercises),
   training: one(trainings, {
@@ -113,20 +108,25 @@ export const trainingDayRelations = relations(trainingDay, ({ many, one }) => ({
 }));
 
 export type Exercises = InferSelectModel<typeof exercises>;
-export const exercises = pgTable("exercises", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 255 }).notNull(),
+export const exercises = sqliteTable("exercises", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
   description: text("description"),
   series: integer("series").notNull(),
-  reps: jsonb("reps").$type<string[]>().notNull(), // Storing as JSON string
-  kilograms: decimal("kilograms", { precision: 5, scale: 2 }),
-  rpe: decimal("rpe", { precision: 3, scale: 1 }),
-  createdAt: date("created_at").notNull().defaultNow(),
-  updatedAt: date("updated_at").notNull().defaultNow(),
-  trainingDayId: uuid("training_id")
+  reps: text("reps").notNull(), // Store as JSON string
+  kilograms: real("kilograms"),
+  rpe: real("rpe"),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(unixepoch())`),
+  updatedAt: text("updated_at")
+    .notNull()
+    .default(sql`(unixepoch())`),
+  trainingDayId: text("training_id")
     .notNull()
     .references(() => trainingDay.id),
 });
+
 export const exercisesRelations = relations(exercises, ({ one }) => ({
   trainingDay: one(trainingDay, {
     fields: [exercises.trainingDayId],
@@ -135,15 +135,16 @@ export const exercisesRelations = relations(exercises, ({ one }) => ({
 }));
 
 export type Sessions = InferSelectModel<typeof sessions>;
-export const sessions = pgTable("sessions", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 255 }).notNull(),
-  token: varchar("token", { length: 255 }).notNull(),
-  expiresAt: date("expiresAt").notNull(),
-  userId: uuid("user_id")
+export const sessions = sqliteTable("sessions", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  token: text("token").notNull(),
+  expiresAt: text("expiresAt").notNull(),
+  userId: text("user_id")
     .notNull()
     .references(() => users.id),
 });
+
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],
@@ -152,30 +153,22 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
 }));
 
 export type TwoFactorAuth = InferSelectModel<typeof twoFactorAuth>;
-export const twoFactorAuth = pgTable("twoFactorAuth", {
-  email: varchar("email", { length: 255 }).notNull().primaryKey(),
-  code: varchar("code", { length: 6 }).notNull(),
-  expiresAt: date("expiresAt").notNull(),
+export const twoFactorAuth = sqliteTable("twoFactorAuth", {
+  email: text("email").notNull().primaryKey(),
+  code: text("code").notNull(),
+  expiresAt: text("expiresAt").notNull(),
 });
 
 export type PendingUsers = InferSelectModel<typeof pendingUsers>;
-export const pendingUsers = pgTable(
-  "pendingUsers",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    name: varchar("name", { length: 255 }).notNull(),
-    surname: varchar("surname", { length: 255 }).notNull(),
-    email: varchar("email", { length: 255 }).notNull().unique(),
-    phone: varchar("phone", { length: 9 }),
-    password: varchar("password", { length: 255 }).notNull(),
-    country: varchar("country", { length: 255 }),
-    city: varchar("city", { length: 255 }),
-    gymName: varchar("gym_name", { length: 255 }),
-    age: integer("age").notNull(),
-  },
-  () => {
-    return {
-      phoneUnique: sql`UNIQUE(phone) WHERE phone IS NOT NULL`,
-    };
-  }
-);
+export const pendingUsers = sqliteTable("pendingUsers", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  surname: text("surname").notNull(),
+  email: text("email").notNull().unique(),
+  phone: text("phone").unique(),
+  password: text("password").notNull(),
+  country: text("country"),
+  city: text("city"),
+  gymName: text("gym_name"),
+  age: integer("age").notNull(),
+});

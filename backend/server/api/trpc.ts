@@ -1,9 +1,10 @@
 import { initTRPC, TRPCError } from "@trpc/server";
-import { db } from "../db/index";
+import { getDb } from "../db/index";
 import SuperJSON from "superjson";
 import { Sessions } from "../db/schema";
 import { getSession } from "./utils/getSession";
 import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
+import { D1Database } from "@cloudflare/workers-types";
 
 /**
  *
@@ -12,22 +13,26 @@ import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
  */
 interface CreateContextOptions extends Partial<FetchCreateContextFnOptions> {
   session: Sessions | null;
+  env: { DB: D1Database };
 }
 
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
-    drizzle: db,
+    drizzle: getDb(opts.env),
     session: opts.session,
     req: opts.req,
   };
 };
 
-export const createTRPCContext = (opts: FetchCreateContextFnOptions) => {
+export const createTRPCContext = (
+  opts: FetchCreateContextFnOptions & { env: { DB: D1Database } }
+) => {
   const session = getSession({ opts: opts });
-  const innterCtx = createInnerTRPCContext({ session });
+  const innterCtx = createInnerTRPCContext({ session, env: opts.env });
   return createInnerTRPCContext({
     ...innterCtx,
     req: opts.req,
+    env: opts.env,
   });
 };
 export type Context = Awaited<ReturnType<typeof createInnerTRPCContext>>;
