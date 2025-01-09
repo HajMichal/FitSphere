@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { v4 as uuidV4 } from "uuid";
 import { and, eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
@@ -40,10 +41,12 @@ export const loginRouter = createTRPCRouter({
       if (isUserWithEmail?.email) throwTrpcError();
 
       const hashedPwd = await hashPassword(input.password);
+      const id = uuidV4();
       const pendingUser = await ctx.drizzle
         .insert(pendingUsers)
         .values({
           ...input,
+          id,
           password: hashedPwd,
         })
         .onConflictDoUpdate({

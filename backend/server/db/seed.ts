@@ -5,14 +5,7 @@ import {
   TrainingDay,
   Trainings,
   User,
-  users as usersSchema,
-  friendships as friendshipsSchema,
-  trainings as trainingsSchema,
-  trainingDay as trainingDaySchema,
-  exercises as exercisesSchema,
-  sessions as sessionsSchema,
 } from "./schema";
-import { getDb } from ".";
 
 export const users: User[] = [
   {
@@ -179,45 +172,46 @@ export const sessions: Sessions[] = [
   },
 ];
 
-const main = async () => {
-  const db = getDb();
-  try {
-    await db.delete(friendshipsSchema);
-    await db.delete(exercisesSchema);
-    await db.delete(trainingDaySchema);
-    await db.delete(trainingsSchema);
-    await db.delete(sessionsSchema);
-    await db.delete(usersSchema);
+// const main = async () => {
+//   const db = getDb({ DB: "backend/server/db/DB/sqlite.db" });
+//   try {
+//     await db.delete(friendshipsSchema);
+//     await db.delete(exercisesSchema);
+//     await db.delete(trainingDaySchema);
+//     await db.delete(trainingsSchema);
+//     await db.delete(sessionsSchema);
+//     await db.delete(usersSchema);
 
-    await db.insert(friendshipsSchema).values(friendships);
-    await db.insert(usersSchema).values(users);
-    await db.insert(trainingsSchema).values(trainings);
-    await db.insert(trainingDaySchema).values(trainingDay);
-    await db.insert(exercisesSchema).values(exercises);
-    await db.insert(sessionsSchema).values(sessions);
+//     await db.insert(friendshipsSchema).values(friendships);
+//     await db.insert(usersSchema).values(users);
+//     await db.insert(trainingsSchema).values(trainings);
+//     await db.insert(trainingDaySchema).values(trainingDay);
+//     await db.insert(exercisesSchema).values(exercises);
+//     await db.insert(sessionsSchema).values(sessions);
 
-    const userData = await db.query.users.findMany();
-    const friendShipData = await db.query.friendships.findMany();
-    const trainingsData = await db.query.trainings.findMany();
-    const trainingDayData = await db.query.trainingDay.findMany();
-    const exercisesData = await db.query.exercises.findMany();
-    const sessionsData = await db.query.sessions.findMany();
+//     // const userData = await db.query.users.findMany();
+//     // const friendShipData = await db.query.friendships.findMany();
+//     // const trainingsData = await db.query.trainings.findMany();
+//     // const trainingDayData = await db.query.trainingDay.findMany();
+//     // const exercisesData = await db.query.exercises.findMany();
+//     // const sessionsData = await db.query.sessions.findMany();
 
-    console.log(userData);
-    console.log(friendShipData);
-    console.log(trainingsData);
-    console.log(trainingDayData);
-    console.log(exercisesData);
-    console.log(sessionsData);
-  } catch (error) {
-    console.error("Error seeding database:", error);
-  }
-};
+//     // console.log(userData);
+//     // console.log(friendShipData);
+//     // console.log(trainingsData);
+//     // console.log(trainingDayData);
+//     // console.log(exercisesData);
+//     // console.log(sessionsData);
+//   } catch (error) {
+//     console.error("Error seeding database:", error);
+//   }
+// };
 
-main()
-  .catch((error) => {
-    console.error(error);
-  })
-  .finally(() => {
-    process.exit();
-  });
+// main()
+//   .catch((error) => {
+//     console.error("error");
+//     console.error(error);
+//   })
+//   .finally(() => {
+//     process.exit();
+//   });

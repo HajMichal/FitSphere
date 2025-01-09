@@ -3,6 +3,7 @@
 **.vscode
 **dist
 **wrangler.toml
+**schema_pg.ts
 
 backend/drizzle
 backend/server/db/DB

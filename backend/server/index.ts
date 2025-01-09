@@ -57,7 +57,6 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const corsResponse = handleCors(request);
     if (corsResponse) return corsResponse;
-
     const response = await fetchRequestHandler({
       endpoint: "/trpc",
       req: request,
@@ -77,7 +76,3 @@ export default {
     });
   },
 };
-
-console.log(
-  `🌿\x1b[32m [READY] Server is now listening:\x1b[0m http://localhost:${process.env.PORT} 🚀`
-);

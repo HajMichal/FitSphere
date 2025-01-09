@@ -6,8 +6,8 @@ type Role = "gymmer" | "trainer" | "admin";
 export type User = InferSelectModel<typeof users>;
 export type UserWithRelations = User & {
   trainings: TrainingsWithRelations[];
-  friends: User[];
-  session: Sessions | null;
+  // friends: User[];
+  // session: Sessions | null;
 };
 
 export const users = sqliteTable("users", {

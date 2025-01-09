@@ -11,7 +11,6 @@ export function TrpcProvider({ children }: { children: React.ReactNode }) {
       links: [
         httpBatchLink({
           // url: "https://fitsphere-worker.michalhaj2003.workers.dev/trpc", // prod
-          // url: "http://localhost:8787/trpc", // wrangler localy
           url: "http://localhost:3000/trpc",
           transformer: SuperJSON,
         }),

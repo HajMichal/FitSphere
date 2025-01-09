@@ -3,12 +3,18 @@
   "module": "./server/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun run --hot server/index.ts",
-    "db:gen": "drizzle-kit generate",
+    "db:gen": "bun drizzle-kit generate",
     "db:up": "drizzle-kit up",
+    "dev": "wrangler dev --port=3000",
     "deploy": "wrangler deploy --minify server/index.ts",
-    "remote:db:push": "bunx wrangler d1 execute prod-fitsphere --remote",
-    "local:db:push": "bunx wrangler d1 execute prod-fitsphere --local"
+    "remote:db:push": "wrangler d1 execute prod-fitsphere --remote --file=drizzle/migration/${npm_config_file}",
+    "local:db:push": "wrangler d1 execute prod-fitsphere --local --file=drizzle/migration/${npm_config_file}",
+    "db:migr": "wrangler d1 migrations create prod-fitsphere",
+    "local:migr:apply": "wrangler d1 migrations apply prod-fitsphere --local",
+    "remote:migr:apply": "wrangler d1 migrations apply prod-fitsphere --remote",
+    "backup:create": "wrangler d1 backup create prod-fitsphere",
+    "backup:list": "wrangler d1 backup list prod-fitsphere",
+    "backup:download": "wrangler d1 backup download prod-fitsphere --file=${npm_config_backup_id}"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -32,6 +38,7 @@
     "jsonwebtoken": "^9.0.2",
     "resend": "^4.0.1",
     "superjson": "^2.2.2",
+    "uuid": "^11.0.5",
     "zod": "^3.24.1"
   }
 }

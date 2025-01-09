@@ -12,7 +12,9 @@ export function ExerciseTile({ exercise }: { exercise: Exercises }) {
         </div>
         <div className="ml-3">
           <ContentHeader>{exercise.name}</ContentHeader>
-          <ShortDescription>{exercise.reps.join(", ")}</ShortDescription>
+          <ShortDescription>
+            {JSON.parse(exercise.reps).join(", ")}
+          </ShortDescription>
         </div>
       </LongTileContent>
       <LongTileDetail>{exercise.kilograms} kg</LongTileDetail>
