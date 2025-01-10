@@ -14,8 +14,8 @@ export type AppRouter = typeof appRouter;
 
 const ALLOWED_ORIGINS = [
   "http://localhost:5173",
-  "gymwibe.online",
-  "fitsphere.pages.dev",
+  "https://gymwibe.online",
+  "https://fitsphere.pages.dev",
 ];
 
 function handleCors(request: Request): Response | null {
