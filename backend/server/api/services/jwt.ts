@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { stringify } from "superjson";
+import { v4 as uuidV4 } from "uuid";
 
 import { type Context } from "../trpc";
 import { sessions, type Sessions } from "../../db/schema";
@@ -13,9 +14,11 @@ export async function signTokenAndCreateSession({
   ctx,
 }: SignTokenAndCreateSession): Promise<Sessions> {
   const { token, exp } = generateJWTToken(user.id, user.name);
+  const id = uuidV4();
   const currentSession = await ctx.drizzle
     .insert(sessions)
     .values({
+      id,
       userId: user.id,
       name: user.name,
       token: token,
