@@ -11,7 +11,8 @@ export function TrpcProvider({ children }: { children: React.ReactNode }) {
       links: [
         httpBatchLink({
           // url: "https://fitsphere-worker.michalhaj2003.workers.dev/trpc", // prod
-          url: "http://localhost:3000/trpc",
+          // url: "http://localhost:3000/trpc",
+          url: import.meta.env.VITE_API_URL!,
           transformer: SuperJSON,
         }),
       ],
