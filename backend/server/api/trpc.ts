@@ -5,6 +5,7 @@ import { Sessions } from "../db/schema";
 import { getSession } from "./utils/getSession";
 import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import { D1Database } from "@cloudflare/workers-types";
+import { Env } from "..";
 
 /**
  *
@@ -13,7 +14,7 @@ import { D1Database } from "@cloudflare/workers-types";
  */
 interface CreateContextOptions extends Partial<FetchCreateContextFnOptions> {
   session: Sessions | null;
-  env: { DB: D1Database };
+  env: Env;
 }
 
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
@@ -21,11 +22,12 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
     drizzle: getDb(opts.env),
     session: opts.session,
     req: opts.req,
+    env: opts.env,
   };
 };
 
 export const createTRPCContext = (
-  opts: FetchCreateContextFnOptions & { env: { DB: D1Database } }
+  opts: FetchCreateContextFnOptions & { env: Env }
 ) => {
   const session = getSession({ opts: opts });
   const innterCtx = createInnerTRPCContext({ session, env: opts.env });

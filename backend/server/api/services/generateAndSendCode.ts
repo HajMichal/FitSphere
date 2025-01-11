@@ -14,7 +14,7 @@ export async function generateAndSendCode(email: string, ctx: Context) {
       set: { code, expiresAt },
     });
 
-  await send2FACode(email, code);
+  await send2FACode(email, code, ctx.env);
 
   return { success: true, message: "2FA code sent to your email." };
 }
