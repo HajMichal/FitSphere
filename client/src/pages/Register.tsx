@@ -1,7 +1,8 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { trpc } from "../api/trpc";
-import { forwardRef } from "react";
+import { ChangeEvent, forwardRef } from "react";
 import { Input as CustomInput, SubmitButton } from "../components/UIElements";
+import { usePhoneFormat } from "../hooks/phoneFormat";
 
 type FormInputs = {
   name: string;
@@ -42,6 +43,7 @@ function Register() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
     watch,
   } = useForm<FormInputs>();
@@ -51,9 +53,11 @@ function Register() {
     mutate(data);
   };
 
+  const formatPhoneNumber = usePhoneFormat();
+
   // Split registration to 2 or 3 steps
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-3 pb-40 bg-background">
+    <form onSubmit={handleSubmit(onSubmit)} className="p-3 bg-background">
       <div className="flex">
         <CustomInput
           label="First Name"
@@ -106,38 +110,48 @@ function Register() {
           })}
         />
       </div>
-      <CustomInput
-        label="Age"
-        placeholder="25"
-        type="number"
-        {...register("age", {
-          required: "Age is required",
-          valueAsNumber: true,
-        })}
-      />
-      <CustomInput
-        label="Phone number"
-        placeholder="123 123 123"
-        type="number"
-        optional
-        error={errors.phone?.message}
-        {...register("phone")}
-      />
-      <CustomInput
-        label="City"
-        placeholder="Warszawa"
-        optional
-        {...register("city")}
-      />
-      <CustomInput
-        label="Gym name"
-        placeholder="Fabryka Formy"
-        optional
-        {...register("gymName")}
-      />
+      <div className="flex">
+        <CustomInput
+          label="Phone number"
+          placeholder="123-123-123"
+          error={errors.phone?.message}
+          {...register("phone", {
+            pattern: {
+              value: /^\d{3}-\d{3}-\d{3}$/,
+              message: "Phone number must be in the format xxx-xxx-xxx",
+            },
+            onChange: (e: ChangeEvent<HTMLInputElement>) =>
+              setValue("phone", formatPhoneNumber(e.target.value)),
+          })}
+        />
+        <CustomInput
+          label="Age"
+          placeholder="25"
+          type="number"
+          {...register("age", {
+            required: "Age is required",
+            valueAsNumber: true,
+          })}
+        />
+      </div>
+      <div className="flex">
+        <CustomInput
+          label="City"
+          placeholder="Warszawa"
+          optional
+          {...register("city")}
+        />
+        <CustomInput
+          label="Gym name"
+          placeholder="Fabryka Formy"
+          optional
+          {...register("gymName")}
+        />
+      </div>
 
       <SubmitButton text="SIGN UP" />
     </form>
   );
 }
+
 export default Register;

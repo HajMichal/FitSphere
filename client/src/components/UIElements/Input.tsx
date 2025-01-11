@@ -32,8 +32,8 @@ export const Input = forwardRef<HTMLInputElement, TrainingInputProps>(
     ref
   ) => {
     return (
-      <CenterContent className="mt-5">
-        <div className={`w-[85%] space-y-2", ${className}`}>
+      <CenterContent className={`mt-5 ${className}`}>
+        <div className="w-[85%] space-y-2">
           <div className="flex gap-1 mb-2 items-end">
             <ContentHeader className={labelClassName}>{label}</ContentHeader>
             <ShortDescription>{optional && "(optional)"}</ShortDescription>
