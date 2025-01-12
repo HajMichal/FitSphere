@@ -6,16 +6,16 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import { PinCodeInput } from "./PinCode";
-import { type FormInputs } from "../../pages/Register";
+import { type RegisterInputs } from "../../pages/Register";
 import { Input } from "../UIElements";
 import { usePhoneFormat } from "../../hooks/phoneFormat";
 
 interface RegistrationStepsProps {
   step: number;
-  register: UseFormRegister<FormInputs>;
-  watch: UseFormWatch<FormInputs>;
-  setValue: UseFormSetValue<FormInputs>;
-  errors: FieldErrors<FormInputs>;
+  register: UseFormRegister<RegisterInputs>;
+  watch: UseFormWatch<RegisterInputs>;
+  setValue: UseFormSetValue<RegisterInputs>;
+  errors: FieldErrors<RegisterInputs>;
 }
 export function RegistrationSteps({
   step,

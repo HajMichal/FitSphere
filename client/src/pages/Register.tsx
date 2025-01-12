@@ -7,7 +7,7 @@ import { RegistrationContext } from "../context/RegistrationContext";
 import { useNavigate } from "react-router";
 import { ROUTES } from "./routes";
 
-export type FormInputs = {
+export interface RegisterInputs {
   name: string;
   surname: string;
   email: string;
@@ -17,7 +17,7 @@ export type FormInputs = {
   phone?: string;
   city?: string;
   gymName?: string;
-};
+}
 
 function Register() {
   const [registrationStep, setRegistrationStep] = useState<1 | 2 | 3>(1);
@@ -32,7 +32,7 @@ function Register() {
   const { mutate: verify2FACode } = trpc.auth.verify2FACode.useMutation({
     onSuccess() {
       localStorage.removeItem("pendingId");
-      navigate(ROUTES.home);
+      navigate(ROUTES.login);
     },
   });
   const {
@@ -41,9 +41,9 @@ function Register() {
     setValue,
     formState: { errors },
     watch,
-  } = useForm<FormInputs>();
+  } = useForm<RegisterInputs>();
 
-  const onSubmit: SubmitHandler<FormInputs> = (data) => {
+  const onSubmit: SubmitHandler<RegisterInputs> = (data) => {
     const pendingUserId = localStorage.getItem("pendingId");
     if (registrationStep === 1) setRegistrationStep(2);
     else if (registrationStep === 2) {
