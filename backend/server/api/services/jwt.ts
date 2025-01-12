@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { stringify } from "superjson";
 import { v4 as uuidV4 } from "uuid";
 
 import { type Context } from "../trpc";
@@ -13,7 +12,7 @@ export async function signTokenAndCreateSession({
   user,
   ctx,
 }: SignTokenAndCreateSession): Promise<Sessions> {
-  const { token, exp } = generateJWTToken(user.id, user.name);
+  const { token, exp } = generateJWTToken(user.id, user.name, ctx);
   const id = uuidV4();
   const currentSession = await ctx.drizzle
     .insert(sessions)
@@ -32,18 +31,27 @@ export async function signTokenAndCreateSession({
       },
     })
     .returning();
-  if (ctx.req)
-    ctx.req.headers.set("authorization", stringify(currentSession[0]));
+
+  ctx.res?.append(
+    "Set-Cookie",
+    `session=${currentSession[0]}; HttpOnly; Secure; Path=/; Max-Age=${currentSession[0].expiresAt}`
+  );
+
   return currentSession[0];
 }
 
-function generateJWTToken(id: string, name: string) {
-  const exp = new Date(
-    Math.floor(Date.now() / 1000) + 60 * 60 * 24
-  ).toISOString();
-  const token = jwt.sign({ id, name, exp }, process.env.SECRET_TOKEN_KEY!, {
-    algorithm: "RS256",
-    expiresIn: exp,
-  });
+function generateJWTToken(id: string, name: string, ctx: Context) {
+  const validTimeInSeconds = 15 * 24 * 60 * 60 * 1000;
+  const exp = new Date(new Date().getTime() + validTimeInSeconds).toISOString();
+
+  const token = jwt.sign(
+    { id, name, validTimeInSeconds },
+    ctx.env.SECRET_TOKEN_KEY,
+    {
+      algorithm: "HS256",
+      expiresIn: validTimeInSeconds,
+    }
+  );
+
   return { token, exp };
 }

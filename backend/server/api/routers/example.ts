@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { z } from "zod";
 
 export const exampleRouter = createTRPCRouter({
@@ -32,7 +32,10 @@ export const exampleRouter = createTRPCRouter({
           ),
       });
     }),
-
+  protectedTest: protectedProcedure.query(async ({}) => {
+    console.log("test");
+    return { Hello: "There" };
+  }),
   // import {
   //   friendships,
   //   exercises,

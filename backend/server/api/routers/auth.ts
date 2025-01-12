@@ -9,7 +9,7 @@ import { signTokenAndCreateSession } from "../services/jwt";
 import { comparePasswords, hashPassword } from "../utils/passwordMenager";
 import { generateAndSendCode } from "../services/generateAndSendCode";
 
-const throwTrpcError = (message = "INCORRECT CREDENTIALS") => {
+export const throwTrpcError = (message = "Podane dane są nieprawidłowe.") => {
   throw new TRPCError({
     message,
     code: "BAD_REQUEST",
@@ -83,7 +83,7 @@ export const loginRouter = createTRPCRouter({
       if (!user) {
         // This delay makes BAD requests a little bit longer,
         // bruteforce/dictionary/stuffing attacks will be slowed.
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         return throwTrpcError();
       }
 

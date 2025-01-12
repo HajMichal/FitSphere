@@ -51,6 +51,7 @@ function getCorsHeaders(request: Request): Record<string, string> {
 
 export interface Env {
   RESEND_API_KEY: string;
+  SECRET_TOKEN_KEY: string;
   DB: D1Database;
 }
 

@@ -1,18 +1,15 @@
-import { TRPCError } from "@trpc/server";
 import { compare, hash } from "bcryptjs";
+import { throwTrpcError } from "../routers/auth";
 
 export async function comparePasswords(hash: string, password: string) {
-  const checkPwd = await compare(hash, password);
+  const checkPwd = await compare(password, hash);
   if (!checkPwd) {
-    setTimeout(() => {}, 300);
-    throw new TRPCError({
-      message: "INCORRECT CREDENTIALS",
-      code: "NOT_FOUND",
-    });
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    throwTrpcError();
   }
 }
 
-const saltRounds = 10;
+const saltRounds = 12;
 export async function hashPassword(password: string) {
   return await hash(password, saltRounds);
 }
