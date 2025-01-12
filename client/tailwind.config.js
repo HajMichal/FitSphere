@@ -15,7 +15,11 @@ module.exports = {
       montserrat: ["Montserrat"],
       raleway: ["Raleway"],
     },
-    extend: {},
+    extend: {
+      height: {
+        "screen-minus-nav": `calc(100dvh - 67px)`
+      }
+    },
   },
   plugins: [],
 }

@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const PageContainer = styled.div`
   padding-bottom: 20px;
-  height: 90vh;
+  height: calc(100dvh - 67px);
   overflow-y: auto;
   background-color: ${(props) => props.theme.background};
   font-family: "Montserrat";
