@@ -132,8 +132,9 @@ export const loginRouter = createTRPCRouter({
         .where(eq(twoFactorAuth.email, input.email));
       return { msg: "Success Verification" };
     }),
-  logout: publicProcedure.query(({ ctx }) => {
+  logout: publicProcedure.mutation(async ({ ctx }) => {
     deleteCookie(ctx, "token");
+    await new Promise((resolve) => setTimeout(resolve, 500));
     return { success: true };
   }),
 });

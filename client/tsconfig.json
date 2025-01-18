@@ -27,7 +27,13 @@
     "noUncheckedSideEffectImports": true,
 
     // Skip library type checking
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
   "include": ["vite.config.ts", "src"]
 }

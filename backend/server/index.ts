@@ -3,10 +3,12 @@ import { exampleRouter } from "./api/routers/example";
 import { createTRPCContext, createTRPCRouter } from "./api/trpc";
 import { loginRouter } from "./api/routers/auth";
 import { D1Database } from "@cloudflare/workers-types";
+import { userRouter } from "./api/routers/user";
 
 const appRouter = createTRPCRouter({
   example: exampleRouter,
   auth: loginRouter,
+  user: userRouter,
 });
 
 // export type definition of API

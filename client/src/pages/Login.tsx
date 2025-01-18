@@ -1,7 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { trpc } from "../api/trpc";
 import {
-  ErrorMessageBox,
+  FormMessageBox,
   Input,
   Loading,
   SubmitButton,
@@ -33,7 +33,7 @@ function Login() {
     <>
       {isPending && <Loading />}
       <form className="p-3 bg-background h-dvh ">
-        {error && <ErrorMessageBox message={error.message} />}
+        {error && <FormMessageBox message={error.message} />}
         <Input
           label="Login"
           placeholder="Twój e-mail"

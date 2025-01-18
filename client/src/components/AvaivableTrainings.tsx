@@ -16,7 +16,7 @@ export const AvaivableTrainings = memo(function ({
     <div className="w-full">
       <Header>Next trainings</Header>
       <div className="overflow-x-auto scroll-smooth px-0.5 pb-3 whitespace-nowrap gap-7 hide-scrollbar">
-        {user?.trainings[0].trainingDay.map((trainingDay) => {
+        {user?.trainings[0]?.trainingDay.map((trainingDay) => {
           return (
             <TrainingTile
               key={trainingDay.id}

@@ -44,7 +44,6 @@ function generateJWTToken(
 ) {
   const validTimeInSeconds = 15 * 24 * 60 * 60 * 1000; // 15days
   const exp = new Date(new Date().getTime() + validTimeInSeconds).toISOString();
-
   const token = jwt.sign(
     { id, userId, name, validTimeInSeconds },
     ctx.env.SECRET_TOKEN_KEY,

@@ -8,7 +8,7 @@ import {
 import { PinCodeInput } from "./PinCode";
 import { type RegisterInputs } from "../../pages/Register";
 import { Input } from "../UIElements";
-import { usePhoneFormat } from "../../hooks/phoneFormat";
+import { usePhoneFormat } from "../../hooks/usePhoneFormat";
 
 interface RegistrationStepsProps {
   step: number;

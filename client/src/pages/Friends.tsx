@@ -1,7 +1,7 @@
-import { PageContainer } from "../components/styled/Containers";
 import { FriendsList } from "../components/FriendsList";
-import { SearchBar } from "../components/UIElements/SearchBar";
 import { Navbar } from "../components/Navbar";
+import { PageContainer } from "../components/styled/Containers";
+import { SearchBar } from "../components/UIElements/inputs/SearchBar";
 
 function Friends() {
   return (

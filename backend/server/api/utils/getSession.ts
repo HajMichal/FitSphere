@@ -22,7 +22,7 @@ export async function getSession({
   if (decodedToken && typeof decodedToken !== "string") {
     return {
       id: decodedToken.id,
-      userId: decodedToken.id,
+      userId: decodedToken.userId,
       name: decodedToken.name,
       token: token,
       expiresAt: new Date(decodedToken.exp! * 1000).toISOString(),

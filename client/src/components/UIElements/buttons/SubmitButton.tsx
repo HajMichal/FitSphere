@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes } from "react";
-import { CenterContent } from "../styled/Containers";
+import { CenterContent } from "../../styled/Containers";
 interface SubmitButton extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
 }

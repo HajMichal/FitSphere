@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const NameHeader = styled.h1`
   font-family: "Raleway";
   font-weight: 400;
-  font-size: 38px;
+  font-size: 30px;
   margin-left: 30px;
   padding-top: 5px;
 `;
@@ -32,4 +32,10 @@ export const SmallText = styled.h5`
   font-size: 12px;
   font-family: "Montserrat";
   font-weight: 600;
+`;
+
+export const ErrorMainText = styled.h1`
+  font-family: "Montserrat";
+  font-weight: 600;
+  font-size: 16px;
 `;

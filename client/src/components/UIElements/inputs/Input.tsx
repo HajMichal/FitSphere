@@ -1,7 +1,7 @@
-import { forwardRef, InputHTMLAttributes } from "react";
-import { ContentHeader, ShortDescription } from "../styled/Text";
 import { type Icon } from "@phosphor-icons/react";
-import { CenterContent } from "../styled/Containers";
+import { forwardRef, InputHTMLAttributes } from "react";
+import { CenterContent } from "../../styled/Containers";
+import { ContentHeader, ShortDescription } from "../../styled/Text";
 
 interface TrainingInputProps extends InputHTMLAttributes<HTMLInputElement> {
   Icon?: Icon;
