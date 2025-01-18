@@ -26,15 +26,19 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
   };
 };
 
-export const createTRPCContext = (
+export const createTRPCContext = async (
   opts: FetchCreateContextFnOptions & { env: Env }
 ) => {
-  const session = getSession({ opts: opts });
-  const innterCtx = createInnerTRPCContext({ session, env: opts.env });
+  const session = await getSession({ opts: opts });
+
+  const innterCtx = createInnerTRPCContext({
+    session,
+    env: opts.env,
+  });
   return createInnerTRPCContext({
     ...innterCtx,
-    req: opts.req,
     resHeaders: opts.resHeaders,
+    req: opts.req,
     env: opts.env,
   });
 };

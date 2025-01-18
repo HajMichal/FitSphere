@@ -34,6 +34,7 @@ function getCorsHeaders(request: Request): Record<string, string> {
 
   if (origin && ALLOWED_ORIGINS.includes(origin)) {
     return {
+      "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Origin": origin,
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",

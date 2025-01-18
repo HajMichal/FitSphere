@@ -3,6 +3,7 @@ import { v4 as uuidV4 } from "uuid";
 
 import { type Context } from "../trpc";
 import { sessions, type Sessions } from "../../db/schema";
+import { Env } from "../..";
 
 interface SignTokenAndCreateSession {
   user: { id: string; name: string; password: string };
@@ -12,8 +13,8 @@ export async function signTokenAndCreateSession({
   user,
   ctx,
 }: SignTokenAndCreateSession): Promise<Sessions> {
-  const { token, exp } = generateJWTToken(user.id, user.name, ctx);
   const id = uuidV4();
+  const { token, exp } = generateJWTToken(id, user.id, user.name, ctx);
   const currentSession = await ctx.drizzle
     .insert(sessions)
     .values({
@@ -32,26 +33,33 @@ export async function signTokenAndCreateSession({
     })
     .returning();
 
-  ctx.res?.append(
-    "Set-Cookie",
-    `session=${currentSession[0]}; HttpOnly; Secure; Path=/; Max-Age=${currentSession[0].expiresAt}`
-  );
-
   return currentSession[0];
 }
 
-function generateJWTToken(id: string, name: string, ctx: Context) {
-  const validTimeInSeconds = 15 * 24 * 60 * 60 * 1000;
+function generateJWTToken(
+  id: string,
+  userId: string,
+  name: string,
+  ctx: Context
+) {
+  const validTimeInSeconds = 15 * 24 * 60 * 60 * 1000; // 15days
   const exp = new Date(new Date().getTime() + validTimeInSeconds).toISOString();
 
   const token = jwt.sign(
-    { id, name, validTimeInSeconds },
+    { id, userId, name, validTimeInSeconds },
     ctx.env.SECRET_TOKEN_KEY,
     {
       algorithm: "HS256",
       expiresIn: validTimeInSeconds,
     }
   );
-
   return { token, exp };
+}
+
+export function verifyJWT(token: string, env: Env) {
+  try {
+    return jwt.verify(token, env.SECRET_TOKEN_KEY);
+  } catch (err) {
+    return null;
+  }
 }

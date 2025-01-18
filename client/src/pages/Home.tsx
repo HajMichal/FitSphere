@@ -13,6 +13,7 @@ function Home() {
 
   const { data: user, isFetched } = trpc.example.users.useQuery();
   const { data } = trpc.example.protectedTest.useQuery();
+  // const { data } = trpc.auth.logout.useQuery();
   useEffect(() => {
     if (isFetched) setTrainingDay(user?.trainings[0].trainingDay[0].id);
   }, [isFetched, user?.trainings]);

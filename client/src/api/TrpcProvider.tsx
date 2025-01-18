@@ -14,6 +14,12 @@ export function TrpcProvider({ children }: { children: React.ReactNode }) {
           // url: "http://localhost:3000/trpc",
           url: import.meta.env.VITE_API_URL!,
           transformer: SuperJSON,
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include",
+            });
+          },
         }),
       ],
     })

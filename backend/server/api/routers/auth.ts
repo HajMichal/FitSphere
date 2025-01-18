@@ -8,6 +8,7 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 import { signTokenAndCreateSession } from "../services/jwt";
 import { comparePasswords, hashPassword } from "../utils/passwordMenager";
 import { generateAndSendCode } from "../services/generateAndSendCode";
+import { deleteCookie, setCookie } from "../utils/cookieHandlers";
 
 export const throwTrpcError = (message = "Podane dane są nieprawidłowe.") => {
   throw new TRPCError({
@@ -89,8 +90,10 @@ export const loginRouter = createTRPCRouter({
 
       await comparePasswords(user.password, input.password);
 
-      const currentSession = await signTokenAndCreateSession({ user, ctx });
-      return { msg: "logged in", body: currentSession };
+      const session = await signTokenAndCreateSession({ user, ctx });
+      setCookie(ctx, "token", session.token);
+
+      return { msg: "logged in", body: session };
     }),
   verify2FACode: publicProcedure
     .input(
@@ -129,4 +132,8 @@ export const loginRouter = createTRPCRouter({
         .where(eq(twoFactorAuth.email, input.email));
       return { msg: "Success Verification" };
     }),
+  logout: publicProcedure.query(({ ctx }) => {
+    deleteCookie(ctx, "token");
+    return { success: true };
+  }),
 });
