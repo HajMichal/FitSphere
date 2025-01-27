@@ -3,7 +3,6 @@ import { Resend } from "resend";
 import { Env } from "../..";
 
 export async function send2FACode(email: string, code: string, env: Env) {
-  console.log(env.RESEND_API_KEY);
   const resend = new Resend(env.RESEND_API_KEY);
 
   const { error } = await resend.emails.send({

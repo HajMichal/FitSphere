@@ -61,7 +61,8 @@ export const trainings = sqliteTable("trainings", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
-  weeklyFrequency: integer("weekly_frequency").notNull(),
+  weeklyFrequency: integer("weekly_frequency"),
+  declaredWeekDays: text("week_days"), // Store as JSON string
   period: integer("period").notNull(),
   createdAt: text("created_at")
     .notNull()

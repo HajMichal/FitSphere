@@ -9,6 +9,7 @@ export async function getSession({
   opts: FetchCreateContextFnOptions & { env: Env };
 }): Promise<Sessions | null> {
   const cookies = opts.req.headers.get("cookie");
+
   if (!cookies) return null;
 
   const tokenCookie = cookies
@@ -18,7 +19,6 @@ export async function getSession({
 
   const token = tokenCookie.split("=")[1];
   const decodedToken = verifyJWT(token, opts.env);
-
   if (decodedToken && typeof decodedToken !== "string") {
     return {
       id: decodedToken.id,
