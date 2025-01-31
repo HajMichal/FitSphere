@@ -35,6 +35,7 @@ export function UserData() {
 
   return (
     <>
+      {/* FILE NEEDS REFACTOR */}
       {(isLogoutPending || status === "LOADING") && <Loading />}
       <div className="flex items-center justify-between">
         <NameHeader className="whitespace-nowrap max-w-[300px] overflow-hidden overflow-ellipsis">
