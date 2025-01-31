@@ -4,11 +4,17 @@ import { createTRPCContext, createTRPCRouter } from "./api/trpc";
 import { loginRouter } from "./api/routers/auth";
 import { D1Database } from "@cloudflare/workers-types";
 import { userRouter } from "./api/routers/user";
+import { trainingRouter } from "./api/routers/trainings";
+import { excercisesRouter } from "./api/routers/excercises";
+import { trainingDayRouter } from "./api/routers/trainingDay";
 
 const appRouter = createTRPCRouter({
   example: exampleRouter,
   auth: loginRouter,
   user: userRouter,
+  training: trainingRouter,
+  trainingDay: trainingDayRouter,
+  excercises: excercisesRouter,
 });
 
 // export type definition of API
