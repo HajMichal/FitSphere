@@ -2,19 +2,16 @@ import React, { memo } from "react";
 import { ContentHeader, Header } from "./styled/Text";
 import styled from "styled-components";
 import { Barbell } from "@phosphor-icons/react";
-import { UserWithRelations } from "../../../types/database";
+import { UserWithRelations } from "../../../backend/server/db/schema";
 
 type Props = {
   user: UserWithRelations | undefined;
   setTrainingDay: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
-export const AvaivableTrainings = memo(function ({
-  user,
-  setTrainingDay,
-}: Props) {
+export const TrainingDays = memo(function ({ user, setTrainingDay }: Props) {
   return (
     <div className="w-full">
-      <Header>Next trainings</Header>
+      <Header>Dni treningowe</Header>
       <div className="overflow-x-auto scroll-smooth px-0.5 pb-3 whitespace-nowrap gap-7 hide-scrollbar">
         {user?.trainings[0]?.trainingDay.map((trainingDay) => {
           return (

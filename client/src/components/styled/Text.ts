@@ -8,6 +8,12 @@ export const NameHeader = styled.h1`
   padding-top: 5px;
 `;
 
+export const BiggerHeader = styled.h1`
+  font-family: "Raleway";
+  font-weight: 600;
+  font-size: 20px;
+`;
+
 export const Header = styled.h1`
   font-family: "Montserrat";
   font-weight: 600;

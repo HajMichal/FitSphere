@@ -59,6 +59,7 @@ export const Input = forwardRef<HTMLInputElement, TrainingInputProps>(
                 ${inputClassName}
                 `}
               placeholder={placeholder}
+              autoComplete="off"
               {...props}
             />
           </div>

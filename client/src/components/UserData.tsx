@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AvaivableTrainings } from "./AvaivableTrainings";
+import { TrainingDays } from "./TrainingDays";
 import { Calendar } from "./calendar/Calendar";
 import { Exercises } from "./Exercises";
 import { NameHeader } from "./styled/Text";
@@ -10,6 +10,7 @@ import { WomanOnBike } from "../../public/svgs/WomanOnBike";
 import { Gear } from "@phosphor-icons/react";
 import { useNavigate } from "react-router";
 import { useSession } from "@/hooks/useSession";
+import { Training } from "./Training";
 
 export function UserData() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export function UserData() {
 
   useEffect(() => {
     if (isFetched && user?.trainings.length !== 0) {
-      setTrainingDay(user?.trainings[0].trainingDay[0].id);
+      setTrainingDay(user?.trainings[0]?.trainingDay[0]?.id);
     }
   }, [isFetched, user?.trainings]);
 
@@ -54,8 +55,9 @@ export function UserData() {
         />
       ) : (
         <>
+          <Training currentTraining={user?.trainings[0]} />
           <Calendar />
-          <AvaivableTrainings user={user} setTrainingDay={setTrainingDay} />
+          <TrainingDays user={user} setTrainingDay={setTrainingDay} />
           {choosedTrainingDay && (
             <Exercises choosedTrainingDay={choosedTrainingDay} />
           )}

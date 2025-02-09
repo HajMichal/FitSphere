@@ -91,6 +91,7 @@ export function RegistrationSteps({
             <Input
               label="Wiek"
               placeholder="25"
+              autoComplete="off"
               type="number"
               {...register("age", {
                 required: "Należy podać wiek",
@@ -100,6 +101,7 @@ export function RegistrationSteps({
             <Input
               label="Miasto"
               placeholder="Warszawa"
+              autoComplete="off"
               optional
               {...register("city")}
             />
@@ -107,7 +109,7 @@ export function RegistrationSteps({
           <Input
             label="Numer telefonu"
             placeholder="xxx-xxx-xxx"
-            autoComplete={"off"}
+            autoComplete="off"
             optional
             error={errors.phone?.message}
             {...register("phone", {
@@ -122,6 +124,7 @@ export function RegistrationSteps({
           <Input
             label="Nazwa siłowni"
             placeholder="Fabryka Formy"
+            autoComplete="off"
             optional
             {...register("gymName")}
           />

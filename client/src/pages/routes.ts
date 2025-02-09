@@ -1,7 +1,8 @@
 export const ROUTES = {
   home: "/home",
   friends: "/friends",
-  createTrainng: "/create/training",
+  createTrainng: "/stworz/trening",
+  createTrainingDay: "/edycja/dzienTreningowy",
   register: "/auth/signup",
   login: "/auth/login",
 };

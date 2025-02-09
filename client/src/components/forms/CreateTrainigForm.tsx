@@ -6,11 +6,12 @@ import { CenterContent } from "../styled/Containers";
 import { SubmitButton, Input } from "../UIElements";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { trpc } from "@/api/trpc";
+import { useNavigate } from "react-router";
+import { ROUTES } from "@/pages/routes";
 
 export interface CreateTrainingInputs {
   name: string;
   description?: string;
-  // declaredWeekDays: number[];
   period: number;
 }
 
@@ -18,21 +19,15 @@ const week = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 export function CreateTrainigForm() {
   // How to store training days in state?
   // https://chat.deepseek.com/a/chat/s/73d343d6-b0ab-4ab0-92f3-e79515d1cc43
-  // First idea:
-  // const [trainingDays, setTrainingDay] = useState([
-  //   false,
-  //   false,
-  //   false,
-  //   false,
-  //   false,
-  //   false,
-  //   false,
-  // ]);
   const [trainingDays, setTrainingDay] = useState<number[]>([]);
+  const navigate = useNavigate();
 
-  const { mutate } = trpc.training.create.useMutation();
+  const { mutate } = trpc.training.create.useMutation({
+    onSuccess: () => {
+      navigate(ROUTES.createTrainingDay);
+    },
+  });
   const { register, handleSubmit } = useForm<CreateTrainingInputs>();
-  console.log(trainingDays);
 
   const onSubmit: SubmitHandler<CreateTrainingInputs> = (data) => {
     mutate({ ...data, declaredWeekDays: trainingDays });

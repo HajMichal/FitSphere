@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     // Build Information
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo", // Prioritized 'app' build info
 
     // Target & Library
     "target": "ES2022", // Chose the more modern ES2022
@@ -24,15 +23,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
 
     // Skip library type checking
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["vite.config.ts", "src"]
