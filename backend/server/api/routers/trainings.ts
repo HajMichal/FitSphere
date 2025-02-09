@@ -15,12 +15,17 @@ export const trainingRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       const id = uuidV4();
-      return await ctx.drizzle.insert(trainings).values({
-        id,
-        ...input,
-        userId: ctx.session.userId,
-        weeklyFrequency: input.declaredWeekDays.length,
-        declaredWeekDays: JSON.stringify(input.declaredWeekDays),
-      });
+      return await ctx.drizzle
+        .insert(trainings)
+        .values({
+          id,
+          ...input,
+          userId: ctx.session.userId,
+          weeklyFrequency: input.declaredWeekDays.length,
+          declaredWeekDays: JSON.stringify(input.declaredWeekDays),
+        })
+        .returning({
+          id: trainings.id,
+        });
     }),
 });

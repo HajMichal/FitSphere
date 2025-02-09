@@ -6,8 +6,8 @@ import { NameHeader } from "@/components/styled/Text";
 const ModifyTraining = () => {
   return (
     <PageContainer>
-      <NameHeader>Modyfikuj trening!</NameHeader>
-      <AddTrainingDayForm />
+      <NameHeader>Zarządzaj treningiem!</NameHeader>
+      <AddTrainingDayForm trainingNumber={1} />
       <Navbar />
     </PageContainer>
   );

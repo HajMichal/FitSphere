@@ -23,9 +23,8 @@ export function CreateTrainigForm() {
   const navigate = useNavigate();
 
   const { mutate } = trpc.training.create.useMutation({
-    onSuccess: () => {
-      navigate(ROUTES.createTrainingDay);
-    },
+    onSuccess: (data) =>
+      navigate(ROUTES.createTrainingDay, { state: data[0].id }),
   });
   const { register, handleSubmit } = useForm<CreateTrainingInputs>();
 
@@ -36,14 +35,14 @@ export function CreateTrainigForm() {
   return (
     <div>
       <Input
-        label="Training name"
-        placeholder="Name your training..."
+        label="Nazwa treningu"
+        placeholder="Nazwij swój trening..."
         Icon={Tag}
-        {...register("name", { required: "Name is required" })}
+        {...register("name", { required: "To pole jest wymagane" })}
       />
       <Input
-        label="Description"
-        placeholder="E.g. set your goal, training type "
+        label="Opis"
+        placeholder="N.p. zanotuj tutaj swój cel treningów"
         optional
         Icon={BookOpenText}
         {...register("description")}
@@ -65,15 +64,15 @@ export function CreateTrainigForm() {
         </CalendarContainer>
       </CenterContent>
       <Input
-        label="Training period"
-        placeholder="Number of months"
+        label="Okres trwania cyklu treningowego"
+        placeholder="W miesiącach"
         Icon={CalendarDots}
         {...register("period", {
-          required: "Period is required",
+          required: "To pole jest wymagane",
           valueAsNumber: true,
         })}
       />
-      <SubmitButton text="SUBMIT" onClick={handleSubmit(onSubmit)} />
+      <SubmitButton text="DODAJ" onClick={handleSubmit(onSubmit)} />
     </div>
   );
 }
