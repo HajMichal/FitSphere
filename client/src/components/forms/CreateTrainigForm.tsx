@@ -23,8 +23,12 @@ export function CreateTrainigForm() {
   const navigate = useNavigate();
 
   const { mutate } = trpc.training.create.useMutation({
-    onSuccess: (data) =>
-      navigate(ROUTES.createTrainingDay, { state: data[0].id }),
+    onSuccess: ({ id, declaredWeekDays }) =>
+      navigate(ROUTES.createTrainingDay, {
+        state: {
+          trainingDetails: { id, declaredWeekDays },
+        },
+      }),
   });
   const { register, handleSubmit } = useForm<CreateTrainingInputs>();
 

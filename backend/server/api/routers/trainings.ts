@@ -15,7 +15,7 @@ export const trainingRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       const id = uuidV4();
-      return await ctx.drizzle
+      const trainingDay = await ctx.drizzle
         .insert(trainings)
         .values({
           id,
@@ -26,6 +26,14 @@ export const trainingRouter = createTRPCRouter({
         })
         .returning({
           id: trainings.id,
+          declaredWeekDays: trainings.declaredWeekDays,
         });
+
+      return {
+        id: trainingDay[0].id,
+        declaredWeekDays: JSON.parse(
+          trainingDay[0].declaredWeekDays!
+        ) as number[],
+      };
     }),
 });
