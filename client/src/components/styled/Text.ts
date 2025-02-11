@@ -14,6 +14,11 @@ export const BiggerHeader = styled.h1`
   font-size: 20px;
 `;
 
+export const RalewayHeader = styled.h1`
+  font-family: "Raleway";
+  font-weight: 600;
+  font-size: 16px;
+`;
 export const Header = styled.h1`
   font-family: "Montserrat";
   font-weight: 600;

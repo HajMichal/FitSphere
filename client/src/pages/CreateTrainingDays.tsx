@@ -3,14 +3,14 @@ import { AddTrainingDayForm } from "@/components/forms/AddTrainingDayForm";
 import { PageContainer } from "@/components/styled/Containers";
 import { NameHeader } from "@/components/styled/Text";
 
-const ModifyTraining = () => {
+const CreateTrainingDays = () => {
   return (
     <PageContainer>
-      <NameHeader>Dodaj dzień treningowy!</NameHeader>
+      <NameHeader>Dodaj treningi!</NameHeader>
       <AddTrainingDayForm />
       <Navbar />
     </PageContainer>
   );
 };
 
-export default ModifyTraining;
+export default CreateTrainingDays;

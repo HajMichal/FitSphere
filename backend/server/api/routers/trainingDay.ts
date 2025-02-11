@@ -7,17 +7,28 @@ export const trainingDayRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        name: z.string(),
-        description: z.string().optional(),
-        trainingNumber: z.number(),
+        trainings: z
+          .object({
+            name: z.string(),
+            description: z.string().optional(),
+          })
+          .array(),
         trainingId: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const id = uuidV4();
-      return await ctx.drizzle.insert(trainingDay).values({
-        id,
-        ...input,
-      });
+      const trainings = input.trainings.map(
+        async ({ name, description }, index) => {
+          const id = uuidV4();
+          await ctx.drizzle.insert(trainingDay).values({
+            id,
+            name,
+            description,
+            trainingNumber: index,
+            trainingId: input.trainingId,
+          });
+        }
+      );
+      return trainings;
     }),
 });

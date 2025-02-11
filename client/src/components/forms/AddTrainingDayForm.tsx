@@ -3,12 +3,13 @@ import { Input, SubmitButton } from "../UIElements";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BookOpenText, Tag } from "@phosphor-icons/react";
 import { useLocation, Location } from "react-router";
-import * as Select from "@radix-ui/react-select";
-import { useState } from "react";
+import { RalewayHeader } from "../styled/Text";
 
 interface TrainingDayForm {
-  name: string;
-  description?: string;
+  trainings: {
+    name: string;
+    description?: string;
+  }[];
 }
 
 interface TrainingDetails {
@@ -21,56 +22,67 @@ export const AddTrainingDayForm = () => {
   const location: Location<TrainingDetails> = useLocation();
   const { trainingDetails } = location.state || {};
 
-  const [choosedWeekDay, setWeekDay] = useState(
-    trainingDetails?.declaredWeekDays[0].toString()
-  );
+  // const { register, handleSubmit } = useForm<TrainingDayForm>();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<TrainingDayForm>({
+    defaultValues: {
+      trainings: trainingDetails.declaredWeekDays.map(() => ({
+        name: "",
+        description: "",
+      })),
+    },
+  });
 
-  const { mutate } = trpc.trainingDay.create.useMutation();
-  const { register, handleSubmit } = useForm<TrainingDayForm>();
+  const { mutate } = trpc.trainingDay.create.useMutation({
+    onSuccess: () => {
+      // Navigate to create exercise step
+    },
+  });
 
-  const onSubmit: SubmitHandler<TrainingDayForm> = (data) => {
+  const onSubmit: SubmitHandler<TrainingDayForm> = ({ trainings }) => {
     mutate({
-      ...data,
+      trainings,
       trainingId: trainingDetails.id,
-      trainingNumber: Number(choosedWeekDay),
     });
   };
 
   return (
     <div>
-      <Input
-        label="Nazwa"
-        placeholder="Name your training..."
-        Icon={Tag}
-        {...register("name", { required: "To pole jest wymagane" })}
-      />
-      <Input
-        label="Opis"
-        placeholder="Name your training..."
-        optional
-        Icon={BookOpenText}
-        {...register("description")}
-      />
-      <Select.Root value={choosedWeekDay} onValueChange={setWeekDay}>
-        <Select.Trigger>{choosedWeekDay}</Select.Trigger>
-        <Select.Portal>
-          <Select.Content position="popper" className="h-full bg-white">
-            <Select.Viewport className="p-3">
-              {trainingDetails.declaredWeekDays.map((weekDay) => {
-                return (
-                  <Select.Item
-                    key={weekDay}
-                    value={weekDay.toString()}
-                    className="my-1 p-1 rounded-lg"
-                  >
-                    {mapWeekDay[weekDay]}
-                  </Select.Item>
-                );
+      {trainingDetails.declaredWeekDays.map((weekDay, index) => {
+        return (
+          <div key={weekDay} className="pt-5 rounded-lg">
+            <div className="flex items-center gap-1 pl-2">
+              <p>Trening {mapNumbers[index]}:</p>
+              <RalewayHeader className="text-4xl font-raleway">
+                {mapWeekDay[weekDay]}
+              </RalewayHeader>
+            </div>
+            <Input
+              label="Nazwa"
+              placeholder="Name your training..."
+              Icon={Tag}
+              {...register(`trainings.${index}.name`, {
+                required: "To pole jest wymagane",
+                minLength: {
+                  value: 3,
+                  message: "Nazwa musi mieć co najmniej 3 znaki",
+                },
               })}
-            </Select.Viewport>
-          </Select.Content>
-        </Select.Portal>
-      </Select.Root>
+              error={errors.trainings?.[index]?.name?.message}
+            />
+            <Input
+              label="Opis"
+              placeholder="Name your training..."
+              optional
+              Icon={BookOpenText}
+              {...register(`trainings.${index}.description`)}
+            />
+          </div>
+        );
+      })}
       <SubmitButton text="DODAJ" onClick={handleSubmit(onSubmit)} />
     </div>
   );
@@ -84,4 +96,13 @@ const mapWeekDay = [
   "Piątek",
   "Sobota",
   "Niedziela",
+];
+const mapNumbers = [
+  "pierwszy",
+  "drugi",
+  "trzeci",
+  "czwarty",
+  "piąty",
+  "szósty",
+  "siódmy",
 ];
