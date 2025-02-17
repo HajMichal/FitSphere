@@ -14,6 +14,9 @@ import { Training } from "./Training";
 
 export function UserData() {
   const navigate = useNavigate();
+  const [trainingIndex, setTrainingIndex] = useState<number>(
+    JSON.parse(localStorage.getItem("trainingIndex") ?? "0")
+  );
   const [choosedTrainingDay, setTrainingDay] = useState<string | undefined>();
   const { status } = useSession();
   const { data: user, isFetched } = trpc.user.getUserWithTraining.useQuery();
@@ -25,9 +28,9 @@ export function UserData() {
 
   useEffect(() => {
     if (isFetched && user?.trainings.length !== 0) {
-      setTrainingDay(user?.trainings[0]?.trainingDay[0]?.id);
+      setTrainingDay(user?.trainings[trainingIndex]?.trainingDay[0]?.id);
     }
-  }, [isFetched, user?.trainings]);
+  }, [isFetched, user?.trainings, trainingIndex]);
 
   useEffect(() => {
     if (isLogoutSuccess) navigate(ROUTES.login);
@@ -55,9 +58,18 @@ export function UserData() {
         />
       ) : (
         <>
-          <Training currentTraining={user?.trainings[0]} />
+          <Training
+            currentTraining={user?.trainings[trainingIndex]}
+            availableTrainings={user?.trainings}
+            setTrainingIndex={setTrainingIndex}
+          />
           <Calendar />
-          <TrainingDays user={user} setTrainingDay={setTrainingDay} />
+          <TrainingDays
+            user={user}
+            trainingIndex={trainingIndex}
+            choosedTrainingDay={choosedTrainingDay}
+            setTrainingDay={setTrainingDay}
+          />
           {choosedTrainingDay && (
             <Exercises choosedTrainingDay={choosedTrainingDay} />
           )}
